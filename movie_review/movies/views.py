@@ -72,7 +72,7 @@ class MovieList(generics.ListAPIView):
     '''
     모든 영화 목록을 조회
     '''
-    queryset = models.Movie.objects.all()
+    queryset = models.Movie.objects.order_by('-rate')
     serializer_class = serializers.MovieListResponseSerializer
 
 class MovieDetail(generics.RetrieveAPIView):
@@ -95,8 +95,9 @@ class MovieSearch(APIView):
 
 
 class CommentList(APIView):
-    @authentication_classes([JWTAuthentication])
-    @permission_classes([IsAuthenticatedOrReadOnly])
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
     def get(self, request, movie_id):
         try:
             movie = models.Movie.objects.get(id=movie_id)
@@ -106,16 +107,16 @@ class CommentList(APIView):
         except models.Movie.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @authentication_classes([JWTAuthentication])
-    @permission_classes([IsAuthenticatedOrReadOnly])
     def post(self, request, movie_id):
         try:
             movie = models.Movie.objects.get(id=movie_id)
-            serializer = serializers.CommentRequestSerializer(data=request.data)
-            if serializer.is_valid(): # 유효성 검사
-                serializer.save(movie_id=movie, user_id=request.user)
-                return Response(serializer.data, status = status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except models.Movie.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = serializers.CommentRequestSerializer(data=request.data)
+        print(request.user)
+        if serializer.is_valid(): # 유효성 검사
+            serializer.save(movie_id=movie, user_id=request.user)
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

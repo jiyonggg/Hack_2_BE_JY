@@ -8,6 +8,11 @@ import requests
 from . import serializers
 from . import models
 
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+
 # Create your views here.
 def init_db(request):
     '''
@@ -84,18 +89,29 @@ class MovieDetail(APIView):
             raise Http404
         serializer = serializers.MovieDetailResponseSerializer(models.Movie, many=True)
 
-class CommentList(APIView):
-    '''
-    한 영화에 대한 댓글 관련
-    '''
-    def get(self, request):
-        '''
-        모든 댓글 목록 조회
-        '''
-        pass
 
-    def post(self, request):
-        '''
-        댓글 작성
-        '''
-        pass
+class CommentList(APIView):
+    @authentication_classes([JWTAuthentication])
+    @permission_classes([IsAuthenticatedOrReadOnly])
+    def get(self, request, movie_id):
+        try:
+            movie = models.Movie.objects.get(id=movie_id)
+            comment = models.Comment.objects.filter(movie_id=movie)
+            serializer = serializers.CommentResponseSerializer(comment, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except models.Movie.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @authentication_classes([JWTAuthentication])
+    @permission_classes([IsAuthenticatedOrReadOnly])
+    def post(self, request, movie_id):
+        try:
+            movie = models.Movie.objects.get(id=movie_id)
+            serializer = serializers.CommentRequestSerializer(data=request.data)
+            if serializer.is_valid(): # 유효성 검사
+                serializer.save(movie_id=movie, user_id=request.user)
+                return Response(serializer.data, status = status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except models.Movie.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

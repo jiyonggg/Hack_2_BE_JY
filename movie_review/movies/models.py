@@ -35,6 +35,6 @@ class Comment(models.Model):
     영화 코멘트
     '''
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='comments') # 영화 id
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments') # 유저 id
+    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments') # 유저 id
     comment = models.CharField(max_length=100) # 출연자 이름
     created_at = models.DateTimeField(auto_now_add=True) # 코멘트 생성 시간

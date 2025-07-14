@@ -36,6 +36,8 @@ class CommentResponseSerializer(serializers.ModelSerializer):
     1. 영화에 달린 코멘트 목록 열람용 시리얼라이저
     2. 코멘트 작성 시 반환되는 응답용 시리얼라이저
     '''
+    comment_set = CommentRequestSerializer(many=True, read_only=True)
+
     class Meta:
-        model = models.Comment
-        fields = '__all__'
+        model = models.Movie
+        fields = ['comment_set']

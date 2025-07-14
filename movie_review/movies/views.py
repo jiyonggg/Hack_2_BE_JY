@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models.query import QuerySet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
@@ -71,8 +72,16 @@ class MovieList(generics.ListAPIView):
     '''
     모든 영화 목록을 조회
     '''
-    queryset = models.Movie.objects.order_by('-rate')
+    queryset = models.Movie.objects.all()
     serializer_class = serializers.MovieListResponseSerializer
+
+class MovieListofTopTen(generics.ListAPIView):
+    '''
+    메인 페이지용 api로, 영화를 인기순으로 10개를 보여줌
+    '''
+    queryset = models.Movie.objects.order_by('-rate')[:10]
+    serializer_class = serializers.MovieListResponseSerializer
+    pagination_class = None
 
 class MovieDetail(generics.RetrieveAPIView):
     '''
@@ -133,6 +142,8 @@ class MovieSearch(generics.ListAPIView):
 #         else:
 #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# 위의 코드를 최대한 보존하고 페이지네이션 기능만 추가
 class CommentList(generics.GenericAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]

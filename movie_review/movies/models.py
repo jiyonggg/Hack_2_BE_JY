@@ -20,16 +20,16 @@ class Cast(models.Model):
     '''
     영화에 대한 1인의 출연 정보 (감독 포함)
     '''
-    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='casts')
-    name = models.CharField(max_length=100)
-    profile_url = models.URLField()
+    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='casts') # 영화 id
+    name = models.CharField(max_length=100) # 출연자 이름
+    profile_url = models.URLField() # 출연자 프로필 사진
     role = models.CharField(max_length=100) # 감독도 역할에 포함
 
 class Comment(models.Model):
     '''
     영화 코멘트
     '''
-    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
-    comment = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
+    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='comments') # 영화 id
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments') # 유저 id
+    comment = models.CharField(max_length=100) # 출연자 이름
+    created_at = models.DateTimeField(auto_now_add=True) # 코멘트 생성 시간

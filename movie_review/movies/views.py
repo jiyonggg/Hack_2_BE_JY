@@ -78,6 +78,16 @@ class MovieDetail(generics.RetrieveAPIView):
     serializer_class = serializers.MovieDetailResponseSerializer
     lookup_url_kwarg = 'movie_id'
 
+class MovieSearch(APIView):
+    '''
+    한국어 제목을 바탕으로 영화 검색. 영화 제목 내 검색어 포함을 기준으로 검색됨
+    '''
+    def get(self, request):
+        keyword = request.query_params.get('title', '')
+        movie = models.Movie.objects.filter(title_kor__icontains=keyword)
+        serializer = serializers.MovieListResponseSerializer(movie, many=True)
+        return Response(serializer.data)
+
 class CommentList(APIView):
     '''
     한 영화에 대한 댓글 관련

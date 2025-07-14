@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 
 from . import models
 
@@ -19,18 +20,20 @@ class MovieDetailResponseSerializer(serializers.ModelSerializer):
         model = models.Movie
         fields = '__all__'
 
-class MovieListResponseSerializer(serializers.ModelSerializer):
+class MovieListResponseSerializer(serializers.HyperlinkedModelSerializer):
     '''
     메인 화면에서 보이는 여러 영화의 정보
     '''
     detail_url = serializers.SerializerMethodField()
-    
+
     def get_detail_url(self, obj):
-        return f'http://localhost:8000/movies/{obj.id}/'
+        request = self.context['request']
+        # reverse: 현재 상대 경로를 바탕으로 절대 경로 생성 후 반환
+        return reverse('movies:movie-detail', kwargs={'movie_id': obj.id}, request=request)
 
     class Meta:
         model = models.Movie
-        fields = ['id', 'title_kor', 'poster_url', 'detail_url']
+        fields = ['id', 'title_kor', 'poster_url', 'rate', 'detail_url']
 
 
 class CommentRequestSerializer(serializers.ModelSerializer):

@@ -16,6 +16,15 @@ class Movie(models.Model):
     age = models.CharField(max_length=100) # 이용 연령
     plot = models.TextField() # 줄거리
 
+class Cast(models.Model):
+    '''
+    영화에 대한 1인의 출연 정보 (감독 포함)
+    '''
+    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='casts')
+    name = models.CharField(max_length=100)
+    profile_url = models.URLField()
+    role = models.CharField(max_length=100) # 감독도 역할에 포함
+
 class Comment(models.Model):
     '''
     영화 코멘트

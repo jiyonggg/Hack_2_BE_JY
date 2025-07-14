@@ -6,6 +6,7 @@ cryptography==45.0.5
 dj-rest-auth==7.0.1
 Django==5.2.4
 django-allauth==65.10.0
+django-cors-headers==4.7.0
 djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.0
 idna==3.10
@@ -17,4 +18,3 @@ requests==2.32.4
 sqlparse==0.5.3
 tzdata==2025.2
 urllib3==2.5.0
-django-cors-headers==4.7.0

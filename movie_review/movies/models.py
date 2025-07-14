@@ -13,7 +13,6 @@ class Movie(models.Model):
     rate = models.FloatField() # 평점
     genre = models.CharField(max_length=100) # 장르
     showtime = models.PositiveIntegerField() # 상영 시간
-    age = models.CharField(max_length=100) # 이용 연령
     plot = models.TextField() # 줄거리
 
 class Cast(models.Model):
@@ -24,6 +23,12 @@ class Cast(models.Model):
     name = models.CharField(max_length=100) # 출연자 이름
     profile_url = models.URLField() # 출연자 프로필 사진
     role = models.CharField(max_length=100) # 감독도 역할에 포함
+
+    def __str__(self):
+        return f'''영화 ID: {self.movie_id}
+                   이름: {self.name}
+                   프로필 사진 URL: {self.profile_url}
+                   역할: {self.role}'''
 
 class Comment(models.Model):
     '''

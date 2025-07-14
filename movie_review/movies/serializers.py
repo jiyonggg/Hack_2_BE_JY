@@ -21,7 +21,7 @@ class MovieListResponseSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = models.Movie
-        fields = ['id', 'title_kor', 'poster_url']
+        fields = ['id', 'title_kor', 'poster_url', 'url']
 
 class CommentRequestSerializer(serializers.ModelSerializer):
     '''

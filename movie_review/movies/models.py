@@ -14,3 +14,10 @@ class Movie(models.Model):
     showtime = models.PositiveIntegerField() # 상영 시간
     age = models.CharField() # 이용 연령
     plot = models.TextField() # 줄거리
+
+class Comment(models.Model):
+    '''
+    영화 코멘트
+    '''
+    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='comments')
+    

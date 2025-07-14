@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 import requests
 
 from . import serializers
@@ -67,27 +67,31 @@ def init_db(request):
             cast_info['role'] = cast.get('character', '')
             cast_info['movie_id'] = instance
             models.Cast.objects.create(**cast_info)
-    
 
-class MovieList(APIView):
+class MovieList(generics.ListAPIView):
     '''
     모든 영화 목록을 조회
     '''
-    def get(self, request):
-        movies = models.Movie.objects.all()
-        serializer = serializers.MovieListResponseSerializer(movies, many=True)
-        return Response(serializer.data)
+    queryset = models.Movie.objects.all()
+    serializer_class = serializers.MovieListResponseSerializer
 
-class MovieDetail(APIView):
+class MovieDetail(generics.RetrieveAPIView):
     '''
     한 영화의 상세 정보를 조회
     '''
-    def get(self, request, movie_id):
-        try:
-            movie = models.Movie.objects.get(id=movie_id)
-        except models.Movie.DoesNotExist:
-            raise Http404
-        serializer = serializers.MovieDetailResponseSerializer(models.Movie, many=True)
+    queryset = models.Movie.objects.all()
+    serializer_class = serializers.MovieDetailResponseSerializer
+    lookup_url_kwarg = 'movie_id'
+
+class MovieSearch(APIView):
+    '''
+    한국어 제목을 바탕으로 영화 검색. 영화 제목 내 검색어 포함을 기준으로 검색됨
+    '''
+    def get(self, request):
+        keyword = request.query_params.get('title', '')
+        movie = models.Movie.objects.filter(title_kor__icontains=keyword)
+        serializer = serializers.MovieListResponseSerializer(movie, many=True)
+        return Response(serializer.data)
 
 
 class CommentList(APIView):

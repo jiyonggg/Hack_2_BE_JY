@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('movies/', include('movies.urls')),
+    path('dj/', include('dj_rest_auth.urls')),
+    path('dj/registration/', include('dj_rest_auth.registration.urls')),
 ]

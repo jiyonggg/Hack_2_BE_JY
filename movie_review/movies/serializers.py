@@ -46,8 +46,12 @@ class CommentResponseSerializer(serializers.ModelSerializer):
     1. 영화에 달린 코멘트 목록 열람용 시리얼라이저
     2. 코멘트 작성 시 반환되는 응답용 시리얼라이저
     '''
-    comment_set = CommentRequestSerializer(many=True, read_only=True)
+    nickname = serializers.SerializerMethodField()
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
-        model = models.Movie
-        fields = ['comment_set']
+        model = models.Comment
+        fields = ['id', 'nickname', 'comment', 'created_at']
+
+    def get_nickname(self, obj):
+        return obj.user_id.nickname

@@ -4,10 +4,16 @@ from . import models
 
 # Serializers
 
-class MovieDetailResponseSerializer(serializers.HyperlinkedModelSerializer):
+class CastListResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Cast
+        fields = ['name', 'profile_url', 'role']
+
+class MovieDetailResponseSerializer(serializers.ModelSerializer):
     '''
     영화 하나의 상세 정보
     '''
+    casts = CastListResponseSerializer(many=True)
     
     class Meta:
         model = models.Movie
@@ -17,11 +23,15 @@ class MovieListResponseSerializer(serializers.ModelSerializer):
     '''
     메인 화면에서 보이는 여러 영화의 정보
     '''
-    url = serializers.HyperlinkedIdentityField(view_name='movie-detail')
+    detail_url = serializers.SerializerMethodField()
     
+    def get_detail_url(self, obj):
+        return f'http://localhost:8000/movies/{obj.id}/'
+
     class Meta:
         model = models.Movie
-        fields = ['id', 'title_kor', 'poster_url', 'url']
+        fields = ['id', 'title_kor', 'poster_url', 'detail_url']
+
 
 class CommentRequestSerializer(serializers.ModelSerializer):
     '''

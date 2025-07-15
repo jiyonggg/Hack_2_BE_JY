@@ -14,10 +14,15 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 # Create your views here.
-def init_db(request):
+def init_db():
     '''
     데이터베이스에 외부 영화 정보 저장
     '''
+    # DB 중복 방지
+    if models.Movie.objects.exists():
+        print('DB is already initialized!')
+        return
+    
     url = 'http://43.200.28.219:1313/movies/'
     res = requests.get(url)
     movies = res.json()['movies']
@@ -59,6 +64,7 @@ def init_db(request):
         casts = [director_info] + data.pop('actors')
 
         instance = models.Movie.objects.create(**data)
+        print(f'a movie instance created: {instance.title_kor}')
 
         for cast in casts:
             cast_info = dict()
@@ -66,7 +72,10 @@ def init_db(request):
             cast_info['profile_url'] = cast.get('image_url', '')
             cast_info['role'] = cast.get('character', '')
             cast_info['movie_id'] = instance
-            models.Cast.objects.create(**cast_info)
+            cast = models.Cast.objects.create(**cast_info)
+            print(f'a cast instance for {cast.movie_id} created: {cast.name}, {cast.role}')
+        
+    print('DB is successfully initialized.')
 
 class MovieList(generics.ListAPIView):
     '''

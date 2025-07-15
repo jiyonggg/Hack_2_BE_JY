@@ -5,8 +5,9 @@ from . import views
 
 app_name = 'movies'
 urlpatterns = [
-    path('', views.MovieList.as_view(), name='movie-list'),
-    path('<int:movie_id>/', views.MovieDetail.as_view(), name='movie-detail'),
+    path('', views.MovieListofTopTen.as_view(), name='movie-main'),
+    path('list/', views.MovieList.as_view(), name='movie-list'),
+    path('list/<int:movie_id>/', views.MovieDetail.as_view(), name='movie-detail'),
     path('search/', views.MovieSearch.as_view(), name='movie-search'),
     path('comment/create/<int:movie_id>/', views.CommentList.as_view(),  name='comment-list'),
     path('comment/list/<int:movie_id>/', views.CommentList.as_view(), name='comment-create'),

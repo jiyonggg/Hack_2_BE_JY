@@ -18,6 +18,7 @@ def init_db():
     '''
     데이터베이스에 외부 영화 정보 저장
     '''
+    # DB 중복 방지
     if models.Movie.objects.exists():
         print('DB is already initialized!')
         return

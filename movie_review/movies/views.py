@@ -95,8 +95,8 @@ class MovieSearch(APIView):
 
 
 class CommentList(APIView):
-    @authentication_classes([JWTAuthentication])
-    @permission_classes([IsAuthenticatedOrReadOnly])
+    authentication_classes = [JWTAuthentication]
+    permission_classes =[IsAuthenticatedOrReadOnly]
     def get(self, request, movie_id):
         try:
             movie = models.Movie.objects.get(id=movie_id)
@@ -106,8 +106,6 @@ class CommentList(APIView):
         except models.Movie.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @authentication_classes([JWTAuthentication])
-    @permission_classes([IsAuthenticatedOrReadOnly])
     def post(self, request, movie_id):
         try:
             movie = models.Movie.objects.get(id=movie_id)

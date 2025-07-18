@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '13.210.63.95', 'kikoky.shop', 'www.kikoky.shop']
+ALLOWED_HOSTS = ['127.0.0.1', '15.165.84.185', 'mypublishjy.site', 'www.mypublishjy.site']
 
 
 # Application definition

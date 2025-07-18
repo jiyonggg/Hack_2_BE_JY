@@ -15,7 +15,6 @@ services:
             - ./media:/app/media # media가 있으면
         networks:
             - server
-
     nginx:
         image: nginx:latest
         container_name: nginx
